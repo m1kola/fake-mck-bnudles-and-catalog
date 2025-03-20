@@ -1,0 +1,56 @@
+# Tested this with a kind cluster and OLM v0.31.0 installed
+# from upstream release using the install script:
+# https://github.com/operator-framework/operator-lifecycle-manager/releases/tag/v0.31.0
+
+# This assumes OLM in the `olm` namespace
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: fake-mck-catalog
+  namespace: olm
+spec:
+  displayName: Fake MCK catalog
+  grpcPodConfig:
+    securityContextConfig: restricted
+  image: docker.io/mikalairadchuk070/fake-mck-catalog:latest
+  publisher: Mikalai
+  sourceType: grpc
+  updateStrategy:
+    registryPoll:
+      interval: 60m
+
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test-fake-mck
+spec:
+  finalizers:
+  - kubernetes
+
+---
+
+kind: OperatorGroup
+apiVersion: operators.coreos.com/v1
+metadata:
+  name: og-single
+  namespace: test-fake-mck
+spec:
+  targetNamespaces:
+  - default
+
+---
+
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: fake-mck
+  namespace: test-fake-mck
+spec:
+  channel: stable-v1
+  installPlanApproval: Automatic
+  name: fake-mck-operator
+  source: fake-mck-catalog
+  sourceNamespace: olm
+  startingCSV: fake-mck-operator.v1.32.0
