@@ -95,7 +95,7 @@ You should see something like this:
   type: ResolutionFailed
 ```
 
-## Install MEKO. Uninstall MEKO and install fake MCK
+## Uninstall MEKO and install fake MCK
 
 In this test we try the proposed migration scenario when we uninstall MEKO
 and install MCK which takes over existing CRs.
