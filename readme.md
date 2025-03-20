@@ -13,9 +13,8 @@ I recommend creating public repos so we don't have to deal with pull secrets.
 ## Fake bundle
 
 ```bash
-# Note --platform linux/x86_64 - required if running on a Mac with ARM processor.
-docker build . \
-    --platform linux/x86_64 \
+docker buildx build . \
+    --platform linux/arm64/v8,linux/amd64 \
     -f bundle/1.32.0/bundle.Dockerfile \
     -t docker.io/mikalairadchuk070/fake-mck-operator:1.32.0
 docker push docker.io/mikalairadchuk070/fake-mck-operator:1.32.0
@@ -26,8 +25,8 @@ docker push docker.io/mikalairadchuk070/fake-mck-operator:1.32.0
 mikalairadchuk070/fake-mck-catalog
 
 ```bash
-docker build . \
-    --platform linux/x86_64 \
+docker buildx build . \
+    --platform linux/arm64/v8,linux/amd64 \
     -f catalog/fake-mck-catalog.Dockerfile \
     -t docker.io/mikalairadchuk070/fake-mck-catalog:latest
 docker push docker.io/mikalairadchuk070/fake-mck-catalog:latest
