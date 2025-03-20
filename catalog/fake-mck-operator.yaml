@@ -1,0 +1,6 @@
+Schema: olm.semver
+GenerateMajorChannels: true
+GenerateMinorChannels: false
+Stable:
+  Bundles:
+  - Image: docker.io/mikalairadchuk070/fake-mck-operator:1.32.0
