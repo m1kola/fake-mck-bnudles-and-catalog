@@ -9,6 +9,13 @@ name: stable-v1
 package: fake-mck-operator
 schema: olm.channel
 ---
+entries:
+- name: fake-mck-operator.v1.32.0
+  replaces: mongodb-enterprise.v1.32.0
+name: stable-v1-migration
+package: fake-mck-operator
+schema: olm.channel
+---
 image: docker.io/mikalairadchuk070/fake-mck-operator:1.32.0
 name: fake-mck-operator.v1.32.0
 package: fake-mck-operator

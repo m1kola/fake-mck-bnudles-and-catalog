@@ -22,7 +22,13 @@ docker push docker.io/mikalairadchuk070/fake-mck-operator:1.32.0
 
 ## Fake catalog
 
-mikalairadchuk070/fake-mck-catalog
+Our fake catalog has two channels:
+* `stable-v1` which only contains one entry without `replaces`/`skips`/`skipRanges`.
+  this is suitable for migrating path where we uninstall old operator and install
+  a new one from this channel.
+* `stable-v1-migration` is the channel where where we attempt
+  a migration from `mongodb-enterprise` package to a new package.
+  It contains one entry with a `replaces: mongodb-enterprise.v1.32.0`.
 
 ```bash
 docker buildx build . \
@@ -95,9 +101,9 @@ You should see something like this:
   type: ResolutionFailed
 ```
 
-## Uninstall MEKO and install fake MCK
+## Option 1: Uninstall MEKO and install fake MCK
 
-In this test we try the proposed migration scenario when we uninstall MEKO
+In this test we try the proposed migration path when we uninstall MEKO
 and install MCK which takes over existing CRs.
 
 ### Install MEKO
@@ -127,6 +133,44 @@ kubectl -n test-fake-mck delete csv mongodb-enterprise.v1.32.0
 
 ```
 kubectl apply -f tests/meko-and-fake-mck/02-fake-mck.yml
+```
+
+### Wait for the fake MCK to be installed
+```
+kubectl wait -n test-fake-mck sub fake-mck --for jsonpath='{.status.state}'="AtLatestKnown"
+kubectl wait -n test-fake-mck csv fake-mck-operator.v1.32.0 --for jsonpath='{.status.phase}'="Succeeded"
+```
+
+## Option 2: Install MEKO and replace it with a fake MCK
+
+In this test we try the migration path when we replace MEKO
+with MCK which takes over existing CRs.
+
+This is achieved thanks to `replaces: mongodb-enterprise.v1.32.0` being defined
+on the channel head (see `stable-v1-migration` channel definition in the catalog).
+
+### Install MEKO
+
+To simulate existing setup.
+
+```
+kubectl apply -f tests/meko-and-fake-mck-with-replace/01-meko.yml
+```
+
+### Wait for MEKO to be installed
+```
+kubectl wait -n test-fake-mck sub mongodb-enterprise --for jsonpath='{.status.state}'="AtLatestKnown"
+kubectl wait -n test-fake-mck csv mongodb-enterprise.v1.32.0 --for jsonpath='{.status.phase}'="Succeeded"
+```
+
+**Note:** Ideally at this point for complete testing we should also deploy workloads.
+
+```
+
+### Upgrade from MEKO to MCK
+
+```
+kubectl apply -f tests/meko-and-fake-mck-with-replace/02-patch-meko-with-mck.yml
 ```
 
 ### Wait for the fake MCK to be installed
