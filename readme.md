@@ -175,6 +175,6 @@ kubectl apply -f tests/meko-and-fake-mck-with-replace/02-patch-meko-with-mck.yml
 
 ### Wait for the fake MCK to be installed
 ```
-kubectl wait -n test-fake-mck sub fake-mck --for jsonpath='{.status.state}'="AtLatestKnown"
+kubectl wait -n test-fake-mck sub mongodb-enterprise --for jsonpath='{.status.state}'="AtLatestKnown"
 kubectl wait -n test-fake-mck csv fake-mck-operator.v1.32.0 --for jsonpath='{.status.phase}'="Succeeded"
 ```

@@ -32,4 +32,3 @@ spec:
   name: fake-mck-operator
   source: fake-mck-catalog
   sourceNamespace: olm
-  startingCSV: fake-mck-operator.v1.32.0
