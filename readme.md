@@ -64,6 +64,25 @@ kubectl wait -n test-fake-mck csv fake-mck-operator.v1.32.0 --for jsonpath='{.st
 
 You should see the operator pod running. Also crds, RBAC and other resources installed.
 
+## Fresh fake MCK installation: with `replaces`
+
+This is essentially the same test as above, but we install
+the bundle from the `stable-v1-migration` channel where
+the head of the channel has `replaces: mongodb-enterprise.v1.32.0`.
+
+```
+kubectl apply -f tests/test-fresh-install-with-replace/fake-mck.yml
+```
+
+You can check status of the OLM resources like this:
+
+```
+kubectl wait -n test-fake-mck sub fake-mck --for jsonpath='{.status.state}'="AtLatestKnown"
+kubectl wait -n test-fake-mck csv fake-mck-operator.v1.32.0 --for jsonpath='{.status.phase}'="Succeeded"
+```
+
+You should see the operator pod running. Also crds, RBAC and other resources installed.
+
 ## Install MEKO and fake MCK together
 
 This is to demonstrate CRD conflict during resolution (before the operator is actually installed).
