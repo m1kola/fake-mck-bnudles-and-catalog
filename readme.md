@@ -165,8 +165,6 @@ kubectl wait -n test-fake-mck csv mongodb-enterprise.v1.32.0 --for jsonpath='{.s
 
 **Note:** Ideally at this point for complete testing we should also deploy workloads.
 
-```
-
 ### Upgrade from MEKO to MCK
 
 ```
